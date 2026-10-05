@@ -1,6 +1,20 @@
 {
   "hosting": [
     {
+      "site": "projectnetwork-c403e",
+      "public": "build/web",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=0, must-revalidate" }
+          ]
+        }
+      ],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    },
+    {
       "site": "projectnetwork-c403e-cf176",
       "public": "build/web",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
@@ -16,6 +30,20 @@
     },
     {
       "site": "kku-dating-network",
+      "public": "build/web",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=0, must-revalidate" }
+          ]
+        }
+      ],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    },
+    {
+      "target": "dating-test-final",
       "public": "build/web",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "headers": [

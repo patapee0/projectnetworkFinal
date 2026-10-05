@@ -1,0 +1,13 @@
+{
+  "projects": {},
+  "targets": {
+    "projectnetwork-c403e": {
+      "hosting": {
+        "dating-test-final": [
+          "dating-test-final"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

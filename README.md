@@ -6,14 +6,13 @@
 
 | ส่วน | ที่อยู่ | สถานะ |
 | --- | --- | --- |
-| เว็บเดโมเดิม | `index.html`, `app.js`, `styles.css` | legacy; ยังเก็บบางข้อมูลใน `localStorage` และเรียก Express API; ไม่แชร์ข้อมูล Firebase |
 | Backend เดิม | `backend/` | Express, MongoDB และ Socket.IO; มีข้อมูลจำลอง/หน่วยความจำและยังไม่เหมาะเปิดสาธารณะ |
-| แอป Flutter | `kku_dating_flutter/` | เริ่มใช้ Firebase Auth, Firestore และ Storage; มีสมัคร/ยืนยันอีเมล, โปรไฟล์, ค้นพบ, swipe, match และแชท |
+| เว็บและแอป Flutter | `kku_dating_flutter/` | Firebase Auth, Firestore และ Storage; มีสมัคร/ยืนยันอีเมล, โปรไฟล์, ค้นพบ, swipe, match และแชท |
 | แอป Expo เดิม | `mobile/` | มี Android native project แต่ยังใช้ API ที่ต้องกำหนด URL; ไม่ใช่แอป Flutter |
 
 > **ข้อควรระวัง:** backend ใน `backend/` เป็นเดโมเก่าที่มี mock KKU login และ Socket.IO ที่เชื่อ user ID จาก client จึงถูกปิดการเริ่มทำงานไว้โดยค่าเริ่มต้น และ bind เฉพาะ `127.0.0.1` เมื่อเปิดใช้เพื่อทดลองในเครื่องเท่านั้น ห้ามนำไป deploy หรือใช้กับข้อมูลจริง แอปที่ควรใช้คือ Flutter ใน `kku_dating_flutter/` ซึ่งยืนยันตัวตนและตรวจสิทธิ์ด้วย Firebase
 
-สำหรับเว็บและมือถือที่ใช้ Firebase ร่วมกัน ให้ build Flutter Web ลง Firebase Hosting หรือ build เป็น native Android/iOS จาก `kku_dating_flutter/`; ไม่ต้องเปิด Expo Go ส่วน iOS ต้อง build/sign บนเครื่อง macOS ที่ติดตั้ง Xcode; Windows สร้าง iOS archive ไม่ได้ หน้าเว็บเดิมยังแยกจาก Firebase จนกว่าจะย้ายข้อมูลและเปลี่ยน Hosting ไป Flutter Web
+สำหรับเว็บและมือถือที่ใช้ Firebase ร่วมกัน ให้ build Flutter Web ลง Firebase Hosting หรือ build เป็น native Android/iOS จาก `kku_dating_flutter/`; ไม่ต้องเปิด Expo Go ส่วน iOS ต้อง build/sign บนเครื่อง macOS ที่ติดตั้ง Xcode; Windows สร้าง iOS archive ไม่ได้
 
 แผนระบบและรายการตรวจพบอยู่ใน [SYSTEM_DESIGN_PLAN_TH.md](SYSTEM_DESIGN_PLAN_TH.md)
 
@@ -70,16 +69,11 @@ Firestore เปิด cache บนอุปกรณ์ Android/iOS โดย S
 ## ข้อจำกัดก่อนเปิดให้ผู้ใช้จริง
 
 - ยืนยันว่าอีเมลถูกเปิดจากกล่องจดหมายจริง แต่การตรวจโดเมนอย่างเดียวไม่เท่ากับ KKU SSO; ตรวจสอบกับฝ่าย IT มข. ว่ามี identity provider ให้ใช้หรือไม่
-- เว็บปัจจุบันยังไม่ได้ย้ายจาก localStorage/API ไปใช้ Firebase Auth และ Firestore จึงยังไม่ sync กับ Flutter จนกว่าจะทำ migration ตามแผน
+- Flutter Web และแอป Flutter ใช้ Firebase Auth, Firestore และ Storage ชุดเดียวกัน; Expo/backend เดิมยังแยกจากระบบ Firebase นี้
 - ควรย้ายการสร้าง match, การตรวจสิทธิ์/รายงานผู้ใช้, push notification และงาน moderation ไป Cloud Functions พร้อม App Check และ rate limits
-- แชทใน Flutter เป็น real-time ด้วย Firestore; voice call, media picker/upload UI, push notifications และ admin console ยังไม่อยู่ในรุ่นนี้
+- แชทใน Flutter เป็น real-time ด้วย Firestore และมี voice call/เลือกรูปโปรไฟล์ โดย voice call และการอัปโหลดรูปต้องตั้งค่า TURN/Cloudinary Worker ให้ครบ; push notifications และ admin console ยังไม่อยู่ในรุ่นนี้
 - กฎ Firebase เป็นส่วนบังคับของระบบ: deploy rules ก่อนเปิดข้อมูลให้แอปเชื่อมต่อ
 
-## Backend เดิม (ใช้เพื่ออ้างอิง/ระหว่างย้ายระบบ)
+## Backend เดิม (ไม่ใช้กับเว็บ Flutter ปัจจุบัน)
 
-```powershell
-npm install
-npm run dev
-```
-
-Backend นี้ยังใช้ MongoDB/หน่วยความจำและไม่ใช่บริการ cloud ที่พร้อมใช้งานจริงโดยไม่มีการ deploy, TLS, authentication และแก้ authorization/broadcast ตามแผน ห้ามเปิด API นี้สู่อินเทอร์เน็ตสาธารณะในสภาพปัจจุบัน
+โฟลเดอร์ `backend/` คงไว้เป็นตัวอย่าง API สำหรับอ้างอิงเท่านั้น เว็บ Flutter ใช้ Firebase โดยตรงและให้ build/deploy จาก `kku_dating_flutter/`; backend เดิมไม่เสิร์ฟหน้าเว็บอีกแล้ว และถูกปิดไว้โดยค่าเริ่มต้นเพราะยังมี mock authentication และการตรวจสิทธิ์ที่ไม่เหมาะกับข้อมูลจริง ห้ามเปิด API นี้สู่อินเทอร์เน็ตสาธารณะ

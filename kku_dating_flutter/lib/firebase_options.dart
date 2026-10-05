@@ -30,11 +30,16 @@ class DefaultFirebaseOptions {
     );
     const iosBundleId = String.fromEnvironment('FIREBASE_IOS_BUNDLE_ID', defaultValue: 'com.kkudating.app');
 
-    final appId = switch (defaultTargetPlatform) {
-      TargetPlatform.iOS => iosAppId,
-      TargetPlatform.android => androidAppId,
-      TargetPlatform.macOS || TargetPlatform.windows || TargetPlatform.linux || TargetPlatform.fuchsia => webAppId,
-    };
+    // A web app must use its Web App ID even when opened on iOS or Android.
+    // defaultTargetPlatform reflects the device/browser platform on Flutter Web,
+    // so switching on it here can select an unset native App ID in mobile browsers.
+    final appId = kIsWeb
+        ? webAppId
+        : switch (defaultTargetPlatform) {
+            TargetPlatform.iOS => iosAppId,
+            TargetPlatform.android => androidAppId,
+            TargetPlatform.macOS || TargetPlatform.windows || TargetPlatform.linux || TargetPlatform.fuchsia => webAppId,
+          };
     if ([apiKey, appId, senderId, projectId].any((value) => value.isEmpty)) {
       throw StateError('Firebase is not configured. Add the platform-specific FIREBASE_* build values shown in the project README.');
     }

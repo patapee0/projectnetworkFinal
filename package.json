@@ -1,14 +1,11 @@
 {
   "name": "kku-dating",
   "version": "2.0.0",
-  "description": "KKU Dating Multi-User Real-Time Web Application",
+  "description": "KKU Dating Flutter Web and mobile project",
   "scripts": {
     "start": "npm start --prefix backend",
     "dev": "npm run dev --prefix backend",
     "seed": "npm run seed --prefix backend",
     "install-all": "npm install && npm install --prefix backend && npm install --prefix mobile"
-  },
-  "dependencies": {
-    "firebase": "^12.19.0"
   }
 }
